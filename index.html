@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jee Phoenix — AI Analyst & Market Strategist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c10;
+    --bg2: #0d1117;
+    --surface: rgba(255,255,255,0.03);
+    --surface2: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.07);
+    --accent: #4f9cf9;
+    --accent2: #7dd3fc;
+    --gold: #c9a84c;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --faint: #3d4556;
+    --glow: rgba(79,156,249,0.15);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(79,156,249,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s, height 0.3s;
+  }
+  .cursor.expanded { width: 20px; height: 20px; }
+  .cursor-ring.expanded { width: 56px; height: 56px; border-color: rgba(79,156,249,0.2); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 60px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(10,12,16,0.7);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+  .phoenix-mark {
+    width: 36px; height: 36px;
+    position: relative;
+  }
+  .phoenix-mark svg { width: 100%; height: 100%; }
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .logo-text span { color: var(--accent); }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(79,156,249,0.3);
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+  }
+  .nav-cta:hover {
+    background: rgba(79,156,249,0.08);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(79,156,249,0.15);
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 60px 80px;
+  }
+  .hero-canvas {
+    position: absolute; inset: 0;
+    z-index: 0;
+  }
+  .hero-gradient {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(13,26,52,0.8) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(79,156,249,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 80% 20%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 780px;
+  }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+  }
+  .eyebrow-line { width: 40px; height: 1px; background: var(--accent); }
+  .eyebrow-text {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5.5vw, 5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+    color: var(--text);
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent2);
+  }
+  .hero-headline .gold { color: var(--gold); font-style: italic; }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 52px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex; gap: 20px; flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(79,156,249,0.4); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    text-decoration: none;
+    font-weight: 400;
+    transition: all 0.3s;
+    background: transparent;
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(79,156,249,0.05);
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 0;
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.3s;
+    background: transparent;
+    border: none;
+  }
+  .btn-ghost:hover { color: var(--gold); }
+
+  .hero-stats {
+    position: absolute; right: 60px; bottom: 80px;
+    display: flex; flex-direction: column; gap: 32px;
+    z-index: 2;
+  }
+  .stat-item { text-align: right; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-top: 4px;
+  }
+
+  /* SECTIONS COMMON */
+  section { padding: 120px 60px; }
+  .section-header { margin-bottom: 72px; }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .section-title em { font-style: italic; color: var(--accent2); }
+
+  /* ABOUT */
+  #about { background: var(--bg2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-visual {
+    position: sticky; top: 120px;
+  }
+  .profile-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    max-width: 340px;
+  }
+  .profile-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0d1a2e 0%, #111827 50%, #0a0c10 100%);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .profile-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(79,156,249,0.08) 0%, transparent 60%);
+  }
+  .profile-phoenix {
+    width: 100px; height: 100px;
+    opacity: 0.6;
+    position: relative; z-index: 1;
+  }
+  .profile-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-top: 20px;
+    position: relative; z-index: 1;
+  }
+  .profile-frame::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    background: linear-gradient(135deg, rgba(79,156,249,0.3) 0%, transparent 50%, rgba(201,168,76,0.15) 100%);
+    z-index: -1;
+  }
+  .frame-corner {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--accent);
+    border-style: solid;
+  }
+  .frame-corner.tl { top: -8px; left: -8px; border-width: 1px 0 0 1px; }
+  .frame-corner.tr { top: -8px; right: -8px; border-width: 1px 1px 0 0; }
+  .frame-corner.bl { bottom: -8px; left: -8px; border-width: 0 0 1px 1px; }
+  .frame-corner.br { bottom: -8px; right: -8px; border-width: 0 1px 1px 0; }
+
+  .about-text p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 24px;
+    line-height: 1.85;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .interests-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .interest-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .interest-item:hover {
+    border-color: rgba(79,156,249,0.2);
+    background: rgba(79,156,249,0.03);
+  }
+  .interest-dot {
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .interest-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* RESEARCH */
+  #research {
+    position: relative;
+    overflow: hidden;
+  }
+  #research::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
+  .research-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+  }
+  .research-card {
+    background: var(--bg);
+    padding: 48px 44px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .research-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .research-card:hover { background: rgba(13,17,23,0.9); }
+  .research-card:hover::before { transform: scaleX(1); }
+  .card-num {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--faint);
+    margin-bottom: 24px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(79,156,249,0.2);
+    padding: 4px 10px;
+  }
+  .research-philosophy {
+    grid-column: 1 / -1;
+    background: var(--bg);
+    padding: 56px 44px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .philosophy-label {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text);
+    font-style: italic;
+  }
+  .philosophy-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* COMMUNITY */
+  #community { background: var(--bg2); }
+  .community-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+  .community-card {
+    padding: 40px 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .community-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(79,156,249,0.06) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .community-card:hover { border-color: rgba(79,156,249,0.2); }
+  .community-card:hover::after { opacity: 1; }
+  .community-icon {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .community-stat {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .community-stat span { color: var(--accent); }
+  .community-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 16px;
+  }
+  .community-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .community-quote {
+    padding: 48px 60px;
+    border: 1px solid var(--border);
+    position: relative;
+    background: linear-gradient(135deg, rgba(13,26,52,0.5) 0%, transparent 100%);
+  }
+  .community-quote::before {
+    content: '"';
+    font-family: var(--font-display);
+    font-size: 8rem;
+    color: var(--accent);
+    opacity: 0.08;
+    position: absolute;
+    top: -20px; left: 40px;
+    line-height: 1;
+  }
+  .quote-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+  .quote-attr {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-top: 24px;
+    position: relative; z-index: 1;
+  }
+
+  /* COMPETENCIES */
+  #competencies { position: relative; }
+  .competencies-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .competencies-intro {
+    position: sticky; top: 120px;
+  }
+  .competencies-intro p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 24px;
+  }
+  .skills-list {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .skill-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.35s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-row::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.35s ease;
+  }
+  .skill-row:hover { background: rgba(79,156,249,0.03); border-color: rgba(79,156,249,0.15); }
+  .skill-row:hover::after { transform: scaleY(1); }
+  .skill-num {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+  }
+  .skill-name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+  .skill-level {
+    display: flex; gap: 4px;
+  }
+  .level-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .level-dot.empty {
+    background: transparent;
+    border: 1px solid var(--faint);
+  }
+
+  /* CONTACT */
+  #contact {
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+  }
+  #contact::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 300px;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(79,156,249,0.05) 0%, transparent 70%);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    position: relative; z-index: 1;
+  }
+  .contact-info h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .contact-info p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .social-links {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .social-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.3s;
+    group: true;
+  }
+  .social-link:hover {
+    border-color: rgba(79,156,249,0.3);
+    background: rgba(79,156,249,0.04);
+  }
+  .social-link-inner {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .social-platform {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    width: 70px;
+  }
+  .social-handle {
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+  .social-arrow {
+    font-size: 0.75rem;
+    color: var(--faint);
+    transition: all 0.3s;
+  }
+  .social-link:hover .social-arrow {
+    color: var(--accent);
+    transform: translate(3px, -3px);
+  }
+  .contact-form {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .form-input, .form-textarea, .form-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 18px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    width: 100%;
+    appearance: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: rgba(79,156,249,0.4);
+    background: rgba(79,156,249,0.03);
+  }
+  .form-input::placeholder, .form-textarea::placeholder {
+    color: var(--faint);
+  }
+  .form-textarea { resize: vertical; min-height: 140px; }
+  .form-submit {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 18px 40px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: none;
+    transition: all 0.3s;
+    align-self: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .form-submit:hover::before { transform: translateX(0); }
+  .form-submit:hover { box-shadow: 0 0 30px rgba(79,156,249,0.4); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-left {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .footer-brand span { color: var(--accent); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 60px;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    #hero { padding: 100px 24px 60px; }
+    .hero-stats { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-visual { position: static; }
+    .profile-frame { max-width: 200px; }
+    .research-layout { grid-template-columns: 1fr; }
+    .research-philosophy { grid-template-columns: 1fr; }
+    .community-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .competencies-wrapper { grid-template-columns: 1fr; }
+    .competencies-intro { position: static; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .divider { margin: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <div class="phoenix-mark">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 4C20 4 10 10 8 18C6 26 12 30 20 36C28 30 34 26 32 18C30 10 20 4 20 4Z" fill="none" stroke="#4f9cf9" stroke-width="1"/>
+        <path d="M20 4C20 4 16 14 20 20C24 14 20 4 20 4Z" fill="#4f9cf9" opacity="0.6"/>
+        <path d="M8 18C8 18 14 16 20 20C14 24 8 18 8 18Z" fill="#4f9cf9" opacity="0.3"/>
+        <path d="M32 18C32 18 26 16 20 20C26 24 32 18 32 18Z" fill="#4f9cf9" opacity="0.3"/>
+        <path d="M20 20L16 34" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+        <path d="M20 20L24 34" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+        <circle cx="20" cy="20" r="2" fill="#4f9cf9"/>
+      </svg>
+    </div>
+    <span class="logo-text">Jee <span>Phoenix</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#competencies">Expertise</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:Jeephoenix1@gmail.com" class="nav-cta">Work With Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <div class="hero-gradient"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Mechanical Engineer · AI Analyst · Market Strategist</span>
+    </div>
+    <h1 class="hero-headline reveal reveal-delay-1">
+      I Analyze <em>Systems.</em><br>
+      I Trade <em>Markets.</em><br>
+      I Build <span class="gold">Communities.</span>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">
+      Mechanical engineer applying structured thinking to AI ecosystems and digital asset markets. Engineering Precision. Market Intelligence. AI Foresight.
+    </p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#research" class="btn-primary">View Research →</a>
+      <a href="mailto:Jeephoenix1@gmail.com" class="btn-outline">Work With Me</a>
+      <a href="https://t.me/Jeephoenix" class="btn-ghost" target="_blank">Join Community ↗</a>
+    </div>
+  </div>
+  <div class="hero-stats reveal reveal-delay-4">
+    <div class="stat-item">
+      <div class="stat-num">5<span>+</span></div>
+      <div class="stat-label">Years Analyzing Markets</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100<span>+</span></div>
+      <div class="stat-label">Projects Evaluated</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Systems Thinking</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <div class="section-tag">About</div>
+    <h2 class="section-title">A Systems Thinker<br>at the Edge of <em>Emergence</em></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="profile-frame">
+        <div class="frame-corner tl"></div>
+        <div class="frame-corner tr"></div>
+        <div class="frame-corner bl"></div>
+        <div class="frame-corner br"></div>
+        <div class="profile-placeholder">
+          <svg class="profile-phoenix" viewBox="0 0 100 120" fill="none">
+            <path d="M50 10C50 10 25 25 20 45C15 65 30 75 50 90C70 75 85 65 80 45C75 25 50 10 50 10Z" stroke="#4f9cf9" stroke-width="1.5" fill="none"/>
+            <path d="M50 10C50 10 40 35 50 50C60 35 50 10 50 10Z" fill="#4f9cf9" opacity="0.4"/>
+            <path d="M20 45C20 45 35 40 50 50C35 60 20 45 20 45Z" fill="#4f9cf9" opacity="0.2"/>
+            <path d="M80 45C80 45 65 40 50 50C65 60 80 45 80 45Z" fill="#4f9cf9" opacity="0.2"/>
+            <path d="M50 50L44 85" stroke="#c9a84c" stroke-width="1.2" opacity="0.6"/>
+            <path d="M50 50L56 85" stroke="#c9a84c" stroke-width="1.2" opacity="0.6"/>
+            <path d="M44 85L40 100L50 92L60 100L56 85" stroke="#c9a84c" stroke-width="1" opacity="0.4" fill="none"/>
+            <circle cx="50" cy="50" r="4" fill="#4f9cf9" opacity="0.8"/>
+            <circle cx="50" cy="50" r="8" stroke="#4f9cf9" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+          <div class="profile-label">[ Place Your Photo Here ]</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <p class="reveal">
+        I'm <strong>Jee Phoenix</strong> — a Mechanical Engineer with a systems mindset, operating at the intersection of Artificial Intelligence and digital asset markets.
+      </p>
+      <p class="reveal reveal-delay-1">
+        My engineering background trained me to think in <strong>structures, probabilities, and mechanisms</strong>. I apply that same precision to AI ecosystems, crypto markets, and strategic decision-making. I approach markets analytically, focusing on <strong>structure, risk, and asymmetric opportunity</strong>.
+      </p>
+      <p class="reveal reveal-delay-2">
+        My work focuses on identifying emerging AI projects, analyzing digital asset ecosystems, and translating complex systems into <strong>clear strategic insight</strong>.
+      </p>
+      <div class="interests-grid">
+        <div class="interest-item reveal reveal-delay-1">
+          <div class="interest-dot"></div>
+          <span class="interest-text">AI-driven infrastructure and protocols</span>
+        </div>
+        <div class="interest-item reveal reveal-delay-2">
+          <div class="interest-dot"></div>
+          <span class="interest-text">Market structure & risk management</span>
+        </div>
+        <div class="interest-item reveal reveal-delay-3">
+          <div class="interest-dot"></div>
+          <span class="interest-text">Community-led growth models</span>
+        </div>
+        <div class="interest-item reveal reveal-delay-4">
+          <div class="interest-dot"></div>
+          <span class="interest-text">Long-term digital economy positioning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-header reveal">
+    <div class="section-tag">Research & Insights</div>
+    <h2 class="section-title">The Research <em>Desk</em></h2>
+  </div>
+  <div class="research-layout">
+    <div class="research-card reveal">
+      <div class="card-num">01 / AI Ecosystem</div>
+      <h3 class="card-title">AI Project Evaluations</h3>
+      <p class="card-desc">Systematic evaluation of emerging AI protocols, infrastructure layers, and application-level projects. Using engineering-grade frameworks to assess technical viability, tokenomics, team credibility, and long-term positioning.</p>
+      <div class="card-tags">
+        <span class="tag">Layer 1 & 2</span>
+        <span class="tag">DePIN</span>
+        <span class="tag">AI Agents</span>
+        <span class="tag">Infrastructure</span>
+      </div>
+    </div>
+    <div class="research-card reveal reveal-delay-1">
+      <div class="card-num">02 / Markets</div>
+      <h3 class="card-title">Crypto Market Breakdowns</h3>
+      <p class="card-desc">Deep structural analysis of digital asset markets — cycles, liquidity flows, macro correlations, and on-chain data interpretation. Built on technical methodology and probabilistic reasoning, not narratives.</p>
+      <div class="card-tags">
+        <span class="tag">On-Chain</span>
+        <span class="tag">Macro</span>
+        <span class="tag">Cycle Analysis</span>
+        <span class="tag">BTC</span>
+      </div>
+    </div>
+    <div class="research-card reveal">
+      <div class="card-num">03 / Framework</div>
+      <h3 class="card-title">Trading Framework</h3>
+      <p class="card-desc">A structured approach to market participation built on risk asymmetry, position sizing logic, and patience. No noise. No emotional trading. Just systematic execution based on defined edge and process.</p>
+      <div class="card-tags">
+        <span class="tag">Risk Management</span>
+        <span class="tag">Systematic</span>
+        <span class="tag">Asymmetry</span>
+      </div>
+    </div>
+    <div class="research-card reveal reveal-delay-1">
+      <div class="card-num">04 / Philosophy</div>
+      <h3 class="card-title">Analytical Philosophy</h3>
+      <p class="card-desc">First-principles thinking applied to markets and technology. Avoiding recency bias, herd mentality, and narrative-driven decisions. Intelligence means knowing what to ignore as much as what to act on.</p>
+      <div class="card-tags">
+        <span class="tag">First Principles</span>
+        <span class="tag">Signal / Noise</span>
+        <span class="tag">Long-term View</span>
+      </div>
+    </div>
+    <div class="research-philosophy reveal">
+      <div class="philosophy-label">The Edge is in the Process, not the Prediction.</div>
+      <p class="philosophy-text">
+        Markets reward those who build systematic edges — not those who guess correctly once. Every analysis begins with structure: What is the mechanism? What are the probabilities? Where does asymmetric risk reside? This framework, borrowed from engineering, consistently identifies high-quality opportunities before consensus forms.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="section-header reveal">
+    <div class="section-tag">Community Impact</div>
+    <h2 class="section-title">Building Signal,<br><em>Not Noise</em></h2>
+  </div>
+  <div class="community-grid">
+    <div class="community-card reveal">
+      <span class="community-icon">📡</span>
+      <div class="community-stat">High<span>-</span>Signal</div>
+      <div class="community-label">Content Standard</div>
+      <p class="community-desc">Every piece of content is research-backed, analytically grounded, and free from hype-driven narratives. Quality over volume, always.</p>
+    </div>
+    <div class="community-card reveal reveal-delay-1">
+      <span class="community-icon">🧠</span>
+      <div class="community-stat">Deep<span>—</span></div>
+      <div class="community-label">Community Engagement</div>
+      <p class="community-desc">Building a community of thinkers, analysts, and strategic investors who value insight over entertainment and process over predictions.</p>
+    </div>
+    <div class="community-card reveal reveal-delay-2">
+      <span class="community-icon">🌐</span>
+      <div class="community-stat">Global<span>+</span></div>
+      <div class="community-label">Reach & Influence</div>
+      <p class="community-desc">Connecting across Telegram, X, and GitHub with a growing network of AI enthusiasts, crypto market participants, and strategic thinkers worldwide.</p>
+    </div>
+  </div>
+  <div class="community-quote reveal">
+    <p class="quote-text">"The strongest communities are built on shared understanding, not shared excitement. I build communities that think together — not ones that move in crowds."</p>
+    <div class="quote-attr">— Jee Phoenix, Strategic Community Leadership Philosophy</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPETENCIES -->
+<section id="competencies">
+  <div class="competencies-wrapper">
+    <div class="competencies-intro reveal">
+      <div class="section-tag">Core Expertise</div>
+      <h2 class="section-title" style="font-size:2rem;">Where Engineering Meets <em>Markets</em></h2>
+      <p>Six core disciplines shaping every analysis, strategy, and community initiative — all rooted in systems thinking and engineering precision.</p>
+    </div>
+    <div class="skills-list">
+      <div class="skill-row reveal">
+        <span class="skill-num">01</span>
+        <span class="skill-name">AI Ecosystem Analysis</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+        </div>
+      </div>
+      <div class="skill-row reveal reveal-delay-1">
+        <span class="skill-num">02</span>
+        <span class="skill-name">Technical & Sentiment Analysis</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+        </div>
+      </div>
+      <div class="skill-row reveal reveal-delay-2">
+        <span class="skill-num">03</span>
+        <span class="skill-name">Strategic Risk Assessment</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot empty"></div>
+        </div>
+      </div>
+      <div class="skill-row reveal reveal-delay-3">
+        <span class="skill-num">04</span>
+        <span class="skill-name">Community Scaling</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot empty"></div>
+        </div>
+      </div>
+      <div class="skill-row reveal">
+        <span class="skill-num">05</span>
+        <span class="skill-name">Market Structure Interpretation</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+        </div>
+      </div>
+      <div class="skill-row reveal reveal-delay-1">
+        <span class="skill-num">06</span>
+        <span class="skill-name">Systems Thinking</span>
+        <div class="skill-level">
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+          <div class="level-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">Connect</div>
+    <h2 class="section-title">Let's Build<br><em>Something Meaningful</em></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Open to Collaborations, Consulting & Remote Analytical Roles</h3>
+      <p>Whether you're building an AI project, navigating crypto markets, or looking for a systems thinker to add strategic depth to your team — let's connect.</p>
+      <div class="social-links">
+        <a href="https://t.me/Jeephoenix" target="_blank" class="social-link">
+          <div class="social-link-inner">
+            <span class="social-platform">Telegram</span>
+            <span class="social-handle">t.me/Jeephoenix</span>
+          </div>
+          <span class="social-arrow">↗</span>
+        </a>
+        <a href="https://x.com/Jee_phoenix" target="_blank" class="social-link">
+          <div class="social-link-inner">
+            <span class="social-platform">Twitter/X</span>
+            <span class="social-handle">@Jee_phoenix</span>
+          </div>
+          <span class="social-arrow">↗</span>
+        </a>
+        <a href="https://github.com/Jeephoenix" target="_blank" class="social-link">
+          <div class="social-link-inner">
+            <span class="social-platform">GitHub</span>
+            <span class="social-handle">github.com/Jeephoenix</span>
+          </div>
+          <span class="social-arrow">↗</span>
+        </a>
+        <a href="mailto:Jeephoenix1@gmail.com" class="social-link">
+          <div class="social-link-inner">
+            <span class="social-platform">Email</span>
+            <span class="social-handle">Jeephoenix1@gmail.com</span>
+          </div>
+          <span class="social-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal reveal-delay-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="your@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <select class="form-select form-input">
+          <option value="" disabled selected style="background:#0d1117;">Select an inquiry type</option>
+          <option style="background:#0d1117;">Collaboration Proposal</option>
+          <option style="background:#0d1117;">Consulting Inquiry</option>
+          <option style="background:#0d1117;">Partnership Opportunity</option>
+          <option style="background:#0d1117;">Remote Role / Opportunity</option>
+          <option style="background:#0d1117;">Community & Content</option>
+          <option style="background:#0d1117;">General Inquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" placeholder="Describe your project, opportunity, or question..."></textarea>
+      </div>
+      <button class="form-submit" onclick="handleSubmit(event)">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    © 2025 Jee Phoenix · All rights reserved · Built with precision
+  </div>
+  <div class="footer-brand">
+    Jee <span>Phoenix</span>
+  </div>
+  <div class="footer-left" style="text-align:right;">
+    Engineering Precision · Market Intelligence · AI Foresight
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .skill-row, .research-card, .community-card, .social-link').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('expanded'); ring.classList.add('expanded'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('expanded'); ring.classList.remove('expanded'); });
+});
+
+// Hero canvas animation
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [], edges = [], animFrame;
+
+function resize() {
+  W = canvas.width = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initNodes(); });
+
+function initNodes() {
+  nodes = [];
+  const count = Math.floor(W * H / 14000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+}
+initNodes();
+
+function drawFrame() {
+  ctx.clearRect(0, 0, W, H);
+  const t = Date.now() * 0.001;
+
+  nodes.forEach(n => {
+    n.x += n.vx; n.y += n.vy;
+    n.pulse += 0.02;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+  });
+
+  // Draw edges
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const maxDist = 140;
+      if (dist < maxDist) {
+        const alpha = (1 - dist / maxDist) * 0.12;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(79, 156, 249, ${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Draw nodes
+  nodes.forEach(n => {
+    const glow = Math.sin(n.pulse) * 0.5 + 0.5;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(79, 156, 249, ${0.3 + glow * 0.4})`;
+    ctx.fill();
+  });
+
+  // Flowing line
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(201, 168, 76, 0.06)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 4) {
+    const y = H * 0.5 + Math.sin(x * 0.008 + t) * 40 + Math.sin(x * 0.02 + t * 1.5) * 20;
+    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  animFrame = requestAnimationFrame(drawFrame);
+}
+drawFrame();
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Auto reveal hero elements
+setTimeout(() => {
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
+}, 100);
+
+// Form submit
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target;
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#22c55e';
+  setTimeout(() => {
+    btn.textContent = 'Send Message →';
+    btn.style.background = '';
+  }, 3000);
+}
+
+// Nav scroll effect
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  if (window.scrollY > 60) {
+    nav.style.padding = '16px 60px';
+  } else {
+    nav.style.padding = '24px 60px';
+  }
+});
+</script>
+</body>
+</html>
