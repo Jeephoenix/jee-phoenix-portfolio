@@ -3,7 +3,7 @@
 Personal website for Jee Phoenix — Mechanical Engineer,
 Strategic AI & Market Analyst.
 
-**Live at:** [your GitHub Pages URL here]
+**Live at:** [https://jeephoenix.github.io/jee-phoenix-portfolio]
 
 ## Stack
 - Pure HTML, CSS, JavaScript
